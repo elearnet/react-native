@@ -306,20 +306,21 @@
 #pragma mark - Feature Flags
 
 class RCTAppDelegateBridgelessFeatureFlags : public facebook::react::ReactNativeFeatureFlagsDefaults {
- public:
-  bool enableBridgelessArchitecture() override
-  {
-    return true;
-  }
-  bool enableFabricRenderer() override
-  {
-    return true;
-  }
-  bool useTurboModules() override
-  {
-    return true;
-  }
+public:
+    bool enableBridgelessArchitecture() override
+    {
+      return true;
+    }
+    bool enableFabricRenderer() override
+    {
+      return true;
+    }
+    bool useTurboModules() override
+    {
+      return true;
+    }
 };
+
 
 - (void)_setUpFeatureFlags
 {
