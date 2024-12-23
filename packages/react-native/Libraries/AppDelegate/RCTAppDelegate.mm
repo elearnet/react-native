@@ -19,6 +19,7 @@
 #import <react/renderer/graphics/ColorComponents.h>
 #import "RCTAppDelegate+Protected.h"
 #import "RCTAppSetupUtils.h"
+#import "RCTDependencyProvider.h"
 
 #if RN_DISABLE_OSS_PLUGIN_HEADER
 #import <RCTTurboModulePlugin/RCTTurboModulePlugin.h>
@@ -33,6 +34,8 @@
 #import <ReactCommon/RCTJscInstance.h>
 #endif
 #import <react/nativemodule/defaults/DefaultTurboModules.h>
+
+using namespace facebook::react;
 
 @interface RCTAppDelegate () <RCTComponentViewFactoryComponentProvider, RCTHostDelegate>
 @end
@@ -76,6 +79,7 @@
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [self createRootViewController];
   [self setRootView:rootView toRootViewController:rootViewController];
+  _window.windowScene.delegate = self;
   _window.rootViewController = rootViewController;
   [_window makeKeyAndVisible];
 }
@@ -178,18 +182,6 @@
 {
 }
 
-- (void)host:(RCTHost *)host
-    didReceiveJSErrorStack:(NSArray<NSDictionary<NSString *, id> *> *)stack
-                   message:(NSString *)message
-           originalMessage:(NSString *_Nullable)originalMessage
-                      name:(NSString *_Nullable)name
-            componentStack:(NSString *_Nullable)componentStack
-               exceptionId:(NSUInteger)exceptionId
-                   isFatal:(BOOL)isFatal
-                 extraData:(NSDictionary<NSString *, id> *)extraData
-{
-}
-
 #pragma mark - Bridge and Bridge Adapter properties
 
 - (RCTBridge *)bridge
@@ -223,29 +215,22 @@
 #endif
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const std::string &)name
-                                                      jsInvoker:(std::shared_ptr<facebook::react::CallInvoker>)jsInvoker
+- (std::shared_ptr<TurboModule>)getTurboModule:(const std::string &)name
+                                     jsInvoker:(std::shared_ptr<CallInvoker>)jsInvoker
 {
-  return facebook::react::DefaultTurboModules::getTurboModule(name, jsInvoker);
-}
-
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const std::string &)name
-                                                     initParams:
-                                                         (const facebook::react::ObjCTurboModule::InitParams &)params
-{
-  return nullptr;
+  return DefaultTurboModules::getTurboModule(name, jsInvoker);
 }
 
 - (id<RCTTurboModule>)getModuleInstanceFromClass:(Class)moduleClass
 {
-  return RCTAppSetupDefaultModuleFromClass(moduleClass);
+  return RCTAppSetupDefaultModuleFromClass(moduleClass, self.dependencyProvider);
 }
 
 #pragma mark - RCTComponentViewFactoryComponentProvider
 
 - (NSDictionary<NSString *, Class<RCTComponentViewProtocol>> *)thirdPartyFabricComponents
 {
-  return @{};
+  return self.dependencyProvider ? self.dependencyProvider.thirdPartyFabricComponents : @{};
 }
 
 - (RCTRootViewFactory *)createRCTRootViewFactory
@@ -305,27 +290,34 @@
 
 #pragma mark - Feature Flags
 
-class RCTAppDelegateBridgelessFeatureFlags : public facebook::react::ReactNativeFeatureFlagsDefaults {
-public:
-    bool enableBridgelessArchitecture() override
-    {
-      return true;
-    }
-    bool enableFabricRenderer() override
-    {
-      return true;
-    }
-    bool useTurboModules() override
-    {
-      return true;
-    }
+class RCTAppDelegateBridgelessFeatureFlags : public ReactNativeFeatureFlagsDefaults {
+ public:
+  bool enableBridgelessArchitecture() override
+  {
+    return true;
+  }
+  bool enableFabricRenderer() override
+  {
+    return true;
+  }
+  bool useTurboModules() override
+  {
+    return true;
+  }
+  bool useNativeViewConfigsInBridgelessMode() override
+  {
+    return true;
+  }
+  bool enableFixForViewCommandRace() override
+  {
+    return true;
+  }
 };
-
 
 - (void)_setUpFeatureFlags
 {
   if ([self bridgelessEnabled]) {
-    facebook::react::ReactNativeFeatureFlags::override(std::make_unique<RCTAppDelegateBridgelessFeatureFlags>());
+    ReactNativeFeatureFlags::override(std::make_unique<RCTAppDelegateBridgelessFeatureFlags>());
   }
 }
 

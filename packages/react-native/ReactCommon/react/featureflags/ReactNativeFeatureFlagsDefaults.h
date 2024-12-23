@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6cee65011f4651b671cb6ac61e3a7f63>>
+ * @generated SignedSource<<14f964cf6d43943bdeed783d28c231e0>>
  */
 
 /**
@@ -14,7 +14,7 @@
  *   packages/react-native/scripts/featureflags/ReactNativeFeatureFlags.config.js.
  *
  * To regenerate this code, run the following script from the repo root:
- *   yarn featureflags-update
+ *   yarn featureflags --update
  */
 
 #pragma once
@@ -31,15 +31,19 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool allowRecursiveCommitsWithSynchronousMountOnAndroid() override {
-    return false;
-  }
-
   bool completeReactInstanceCreationOnBgThreadOnAndroid() override {
-    return false;
+    return true;
   }
 
   bool disableEventLoopOnBridgeless() override {
+    return false;
+  }
+
+  bool disableMountItemReorderingAndroid() override {
+    return false;
+  }
+
+  bool enableAccumulatedUpdatesInRawPropsAndroid() override {
     return false;
   }
 
@@ -48,14 +52,14 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableAndroidLineHeightCentering() override {
-    return false;
+    return true;
   }
 
   bool enableBridgelessArchitecture() override {
     return false;
   }
 
-  bool enableCleanTextInputYogaNode() override {
+  bool enableCppPropsIteratorSetter() override {
     return false;
   }
 
@@ -79,7 +83,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableFabricRendererExclusively() override {
+  bool enableFixForViewCommandRace() override {
     return false;
   }
 
@@ -88,6 +92,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableIOSViewClipToPaddingBox() override {
+    return false;
+  }
+
+  bool enableImagePrefetchingAndroid() override {
     return false;
   }
 
@@ -100,6 +108,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableLongTaskAPI() override {
+    return false;
+  }
+
+  bool enableNewBackgroundAndBorderDrawables() override {
     return false;
   }
 
@@ -119,10 +131,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableTextPreallocationOptimisation() override {
-    return false;
-  }
-
   bool enableUIConsistency() override {
     return false;
   }
@@ -135,15 +143,15 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool fixDifferentiatorEmittingUpdatesWithWrongParentTag() override {
+    return true;
+  }
+
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {
     return false;
   }
 
   bool fixMountingCoordinatorReportedPendingTransactionsOnAndroid() override {
-    return false;
-  }
-
-  bool forceBatchingMountItemsOnAndroid() override {
     return false;
   }
 
@@ -156,7 +164,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool initEagerTurboModulesOnNativeModulesQueueAndroid() override {
-    return false;
+    return true;
   }
 
   bool lazyAnimationCallbacks() override {
@@ -167,11 +175,11 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool setAndroidLayoutDirection() override {
-    return true;
+  bool traceTurboModulePromiseRejectionsOnAndroid() override {
+    return false;
   }
 
-  bool traceTurboModulePromiseRejectionsOnAndroid() override {
+  bool useAlwaysAvailableJSErrorHandling() override {
     return false;
   }
 
@@ -180,7 +188,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool useImmediateExecutorInAndroidBridgeless() override {
-    return false;
+    return true;
   }
 
   bool useNativeViewConfigsInBridgelessMode() override {
@@ -195,8 +203,12 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool useRuntimeShadowNodeReferenceUpdate() override {
+  bool useRawPropsJsiValue() override {
     return false;
+  }
+
+  bool useRuntimeShadowNodeReferenceUpdate() override {
+    return true;
   }
 
   bool useTurboModuleInterop() override {

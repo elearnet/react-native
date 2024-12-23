@@ -50,6 +50,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactSoftExceptionLogger;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.common.build.ReactBuildConfig;
+import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
 import com.facebook.react.uimanager.BackgroundStyleApplicator;
 import com.facebook.react.uimanager.LengthPercentage;
 import com.facebook.react.uimanager.LengthPercentageType;
@@ -71,6 +72,7 @@ import com.facebook.react.views.text.TextLayoutManager;
 import com.facebook.react.views.text.internal.span.CustomLetterSpacingSpan;
 import com.facebook.react.views.text.internal.span.CustomLineHeightSpan;
 import com.facebook.react.views.text.internal.span.CustomStyleSpan;
+import com.facebook.react.views.text.internal.span.LegacyLineHeightSpan;
 import com.facebook.react.views.text.internal.span.ReactAbsoluteSizeSpan;
 import com.facebook.react.views.text.internal.span.ReactBackgroundColorSpan;
 import com.facebook.react.views.text.internal.span.ReactForegroundColorSpan;
@@ -406,6 +408,10 @@ public class ReactEditText extends AppCompatEditText {
       return;
     }
 
+    maybeSetSelection(start, end);
+  }
+
+  private void maybeSetSelection(int start, int end) {
     if (start != ReactConstants.UNSET && end != ReactConstants.UNSET) {
       // clamp selection values for safety
       start = clampToTextLength(start);
@@ -532,7 +538,8 @@ public class ReactEditText extends AppCompatEditText {
       int selectionStart = getSelectionStart();
       int selectionEnd = getSelectionEnd();
       setInputType(mStagedInputType);
-      setSelection(selectionStart, selectionEnd);
+      // Restore the selection
+      maybeSetSelection(selectionStart, selectionEnd);
     }
   }
 
@@ -866,7 +873,13 @@ public class ReactEditText extends AppCompatEditText {
 
     float lineHeight = mTextAttributes.getEffectiveLineHeight();
     if (!Float.isNaN(lineHeight)) {
-      workingText.setSpan(new CustomLineHeightSpan(lineHeight), 0, workingText.length(), spanFlags);
+      if (ReactNativeFeatureFlags.enableAndroidLineHeightCentering()) {
+        workingText.setSpan(
+            new CustomLineHeightSpan(lineHeight), 0, workingText.length(), spanFlags);
+      } else {
+        workingText.setSpan(
+            new LegacyLineHeightSpan(lineHeight), 0, workingText.length(), spanFlags);
+      }
     }
   }
 
@@ -1063,7 +1076,7 @@ public class ReactEditText extends AppCompatEditText {
     super.setTextIsSelectable(true);
 
     // Restore the selection since `setTextIsSelectable` changed it.
-    setSelection(selectionStart, selectionEnd);
+    maybeSetSelection(selectionStart, selectionEnd);
 
     if (mContainsImages) {
       Spanned text = getText();

@@ -9,6 +9,7 @@
 #include <cxxreact/ErrorUtils.h>
 #include <glog/logging.h>
 #include <react/bridging/Bridging.h>
+#include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <string>
 #include "StackTraceParser.h"
 
@@ -28,9 +29,12 @@ bool isLooselyNull(const jsi::Value& value) {
   return value.isNull() || value.isUndefined();
 }
 
-bool isEmptyString(jsi::Runtime& runtime, const jsi::Value& value) {
+bool isEqualTo(
+    jsi::Runtime& runtime,
+    const jsi::Value& value,
+    const std::string& str) {
   return jsi::Value::strictEquals(
-      runtime, value, jsi::String::createFromUtf8(runtime, ""));
+      runtime, value, jsi::String::createFromUtf8(runtime, str));
 }
 
 std::string stringifyToCpp(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -49,6 +53,71 @@ void objectAssign(
   auto Object = runtime.global().getPropertyAsObject(runtime, "Object");
   auto assign = Object.getPropertyAsFunction(runtime, "assign");
   assign.callWithThis(runtime, Object, target, value);
+}
+
+jsi::Object wrapInErrorIfNecessary(
+    jsi::Runtime& runtime,
+    const jsi::Value& value) {
+  auto Error = runtime.global().getPropertyAsFunction(runtime, "Error");
+  auto isError =
+      value.isObject() && value.asObject(runtime).instanceOf(runtime, Error);
+  auto error = isError
+      ? value.getObject(runtime)
+      : Error.callAsConstructor(runtime, value).getObject(runtime);
+  return error;
+}
+
+class SetFalseOnDestruct {
+  std::shared_ptr<bool> _value;
+
+ public:
+  SetFalseOnDestruct(const SetFalseOnDestruct&) = delete;
+  SetFalseOnDestruct& operator=(const SetFalseOnDestruct&) = delete;
+  SetFalseOnDestruct(SetFalseOnDestruct&&) = delete;
+  SetFalseOnDestruct& operator=(SetFalseOnDestruct&&) = delete;
+  explicit SetFalseOnDestruct(std::shared_ptr<bool> value)
+      : _value(std::move(value)) {}
+  ~SetFalseOnDestruct() {
+    *_value = false;
+  }
+};
+
+void logErrorWhileReporting(
+    std::string message,
+    jsi::JSError& error,
+    jsi::JSError& originalError) {
+  LOG(ERROR) << "JsErrorHandler::" << message << std::endl
+             << "Js error message: " << error.getMessage() << std::endl
+             << "Original js error message: " << originalError.getMessage()
+             << std::endl;
+}
+
+jsi::Value getBundleMetadata(jsi::Runtime& runtime, jsi::JSError& error) {
+  auto jsGetBundleMetadataValue =
+      runtime.global().getProperty(runtime, "__getBundleMetadata");
+
+  if (!jsGetBundleMetadataValue.isObject() ||
+      !jsGetBundleMetadataValue.asObject(runtime).isFunction(runtime)) {
+    return jsi::Value::null();
+  }
+
+  auto jsGetBundleMetadataValueFn =
+      jsGetBundleMetadataValue.asObject(runtime).asFunction(runtime);
+
+  try {
+    auto bundleMetadataValue = jsGetBundleMetadataValueFn.call(runtime);
+    if (bundleMetadataValue.isObject()) {
+      return bundleMetadataValue;
+    }
+    return bundleMetadataValue;
+  } catch (jsi::JSError& ex) {
+    logErrorWhileReporting(
+        "getBundleMetadata(): Error raised while calling __getBundleMetadata(). Returning null.",
+        ex,
+        error);
+  }
+
+  return jsi::Value::null();
 }
 } // namespace
 
@@ -150,7 +219,7 @@ std::ostream& operator<<(
 
 JsErrorHandler::JsErrorHandler(JsErrorHandler::OnJsError onJsError)
     : _onJsError(std::move(onJsError)),
-      _hasHandledFatalError(false){
+      _inErrorHandler(std::make_shared<bool>(false)){
 
       };
 
@@ -159,42 +228,47 @@ JsErrorHandler::~JsErrorHandler() {}
 void JsErrorHandler::handleError(
     jsi::Runtime& runtime,
     jsi::JSError& error,
-    bool isFatal) {
+    bool isFatal,
+    bool logToConsole) {
   // TODO: Current error parsing works and is stable. Can investigate using
   // REGEX_HERMES to get additional Hermes data, though it requires JS setup
-  if (_isRuntimeReady) {
-    if (isFatal) {
-      _hasHandledFatalError = true;
-    }
 
+  if (!ReactNativeFeatureFlags::useAlwaysAvailableJSErrorHandling() &&
+      _isRuntimeReady) {
     try {
       handleJSError(runtime, error, isFatal);
       return;
-    } catch (jsi::JSError& e) {
-      LOG(ERROR)
-          << "JsErrorHandler: Failed to report js error using js pipeline. Using C++ pipeline instead."
-          << std::endl
-          << "Reporting failure: " << e.getMessage() << std::endl
-          << "Original js error: " << error.getMessage() << std::endl;
+    } catch (jsi::JSError& ex) {
+      logErrorWhileReporting(
+          "handleError(): Error raised while reporting using js pipeline. Using c++ pipeline instead.",
+          ex,
+          error);
+
+      // Re-try reporting using the c++ pipeline
+      _hasHandledFatalError = false;
     }
   }
 
-  emitError(runtime, error, isFatal);
+  handleErrorWithCppPipeline(runtime, error, isFatal, logToConsole);
 }
 
-void JsErrorHandler::emitError(
+void JsErrorHandler::handleErrorWithCppPipeline(
     jsi::Runtime& runtime,
     jsi::JSError& error,
-    bool isFatal) {
+    bool isFatal,
+    bool logToConsole) {
+  *_inErrorHandler = true;
+  SetFalseOnDestruct temp{_inErrorHandler};
+
   auto message = error.getMessage();
-  auto errorObj = error.value().getObject(runtime);
+  auto errorObj = wrapInErrorIfNecessary(runtime, error.value());
   auto componentStackValue = errorObj.getProperty(runtime, "componentStack");
   if (!isLooselyNull(componentStackValue)) {
     message += "\n" + stringifyToCpp(runtime, componentStackValue);
   }
 
   auto nameValue = errorObj.getProperty(runtime, "name");
-  auto name = (isLooselyNull(nameValue) || isEmptyString(runtime, nameValue))
+  auto name = (isLooselyNull(nameValue) || isEqualTo(runtime, nameValue, ""))
       ? std::nullopt
       : std::optional(stringifyToCpp(runtime, nameValue));
 
@@ -216,8 +290,14 @@ void JsErrorHandler::emitError(
     objectAssign(runtime, extraData, extraDataValue.asObject(runtime));
   }
 
+  auto isDEV =
+      isTruthy(runtime, runtime.global().getProperty(runtime, "__DEV__"));
+
   extraData.setProperty(runtime, "jsEngine", jsEngineValue);
   extraData.setProperty(runtime, "rawStack", error.getStack());
+  extraData.setProperty(runtime, "__DEV__", isDEV);
+  extraData.setProperty(
+      runtime, "bundleMetadata", getBundleMetadata(runtime, error));
 
   auto cause = errorObj.getProperty(runtime, "cause");
   if (cause.isObject()) {
@@ -250,7 +330,8 @@ void JsErrorHandler::emitError(
   auto id = nextExceptionId();
 
   ParsedError parsedError = {
-      .message = "EarlyJsError: " + message,
+      .message =
+          _isRuntimeReady ? message : ("[runtime not ready]: " + message),
       .originalMessage = originalMessage,
       .name = name,
       .componentStack = componentStack,
@@ -265,6 +346,14 @@ void JsErrorHandler::emitError(
   auto isComponentError =
       isTruthy(runtime, errorObj.getProperty(runtime, "isComponentError"));
   data.setProperty(runtime, "isComponentError", isComponentError);
+
+  if (logToConsole) {
+    auto console = runtime.global().getPropertyAsObject(runtime, "console");
+    auto errorFn = console.getPropertyAsFunction(runtime, "error");
+    auto finalMessage =
+        jsi::String::createFromUtf8(runtime, parsedError.message);
+    errorFn.callWithThis(runtime, console, finalMessage);
+  }
 
   std::shared_ptr<bool> shouldPreventDefault = std::make_shared<bool>(false);
   auto preventDefault = jsi::Function::createFromHostFunction(
@@ -283,18 +372,33 @@ void JsErrorHandler::emitError(
   data.setProperty(runtime, "preventDefault", preventDefault);
 
   for (auto& errorListener : _errorListeners) {
-    errorListener(runtime, jsi::Value(runtime, data));
+    try {
+      errorListener(runtime, jsi::Value(runtime, data));
+    } catch (jsi::JSError& ex) {
+      logErrorWhileReporting(
+          "handleErrorWithCppPipeline(): Error raised inside an error listener. Executing next listener.",
+          ex,
+          error);
+    }
   }
 
   if (*shouldPreventDefault) {
     return;
   }
 
-  if (isFatal) {
-    _hasHandledFatalError = true;
-  }
+  auto errorType = errorObj.getProperty(runtime, "type");
+  auto isWarn = isEqualTo(runtime, errorType, "warn");
 
-  _onJsError(runtime, parsedError);
+  if (isFatal || !isWarn) {
+    if (isFatal) {
+      if (_hasHandledFatalError) {
+        return;
+      }
+      _hasHandledFatalError = true;
+    }
+
+    _onJsError(runtime, parsedError);
+  }
 }
 
 void JsErrorHandler::registerErrorListener(
@@ -316,6 +420,10 @@ bool JsErrorHandler::isRuntimeReady() {
 
 void JsErrorHandler::notifyOfFatalError() {
   _hasHandledFatalError = true;
+}
+
+bool JsErrorHandler::inErrorHandler() {
+  return *_inErrorHandler;
 }
 
 } // namespace facebook::react

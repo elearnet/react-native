@@ -231,7 +231,8 @@ CommitMode ShadowTree::getCommitMode() const {
   return commitMode_;
 }
 
-MountingCoordinator::Shared ShadowTree::getMountingCoordinator() const {
+std::shared_ptr<const MountingCoordinator> ShadowTree::getMountingCoordinator()
+    const {
   return mountingCoordinator_;
 }
 
@@ -278,8 +279,7 @@ CommitStatus ShadowTree::tryCommit(
   const auto& oldRootShadowNode = oldRevision.rootShadowNode;
   auto newRootShadowNode = transaction(*oldRevision.rootShadowNode);
 
-  if (!newRootShadowNode ||
-      (commitOptions.shouldYield && commitOptions.shouldYield())) {
+  if (!newRootShadowNode) {
     return CommitStatus::Cancelled;
   }
 
@@ -296,8 +296,7 @@ CommitStatus ShadowTree::tryCommit(
   newRootShadowNode = delegate_.shadowTreeWillCommit(
       *this, oldRootShadowNode, newRootShadowNode);
 
-  if (!newRootShadowNode ||
-      (commitOptions.shouldYield && commitOptions.shouldYield())) {
+  if (!newRootShadowNode) {
     return CommitStatus::Cancelled;
   }
 
@@ -314,10 +313,6 @@ CommitStatus ShadowTree::tryCommit(
   {
     // Updating `currentRevision_` in unique manner if it hasn't changed.
     std::unique_lock lock(commitMutex_);
-
-    if (commitOptions.shouldYield && commitOptions.shouldYield()) {
-      return CommitStatus::Cancelled;
-    }
 
     if (ReactNativeFeatureFlags::
             enableGranularShadowTreeStateReconciliation()) {
@@ -401,20 +396,14 @@ void ShadowTree::emitLayoutEvents(
       affectedLayoutableNodes.size());
 
   for (const auto* layoutableNode : affectedLayoutableNodes) {
-    // Only instances of `ViewShadowNode` (and subclasses) are supported.
-
-    const auto& viewEventEmitter = static_cast<const BaseViewEventEmitter&>(
-        *layoutableNode->getEventEmitter());
-
-    // Checking if the `onLayout` event was requested for the particular Shadow
-    // Node.
-    const auto& viewProps =
-        static_cast<const BaseViewProps&>(*layoutableNode->getProps());
-    if (!viewProps.onLayout) {
-      continue;
+    if (auto viewProps =
+            dynamic_cast<const ViewProps*>(layoutableNode->getProps().get())) {
+      if (viewProps->onLayout) {
+        static_cast<const BaseViewEventEmitter&>(
+            *layoutableNode->getEventEmitter())
+            .onLayout(layoutableNode->getLayoutMetrics());
+      }
     }
-
-    viewEventEmitter.onLayout(layoutableNode->getLayoutMetrics());
   }
 }
 
