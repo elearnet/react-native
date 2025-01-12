@@ -38,6 +38,8 @@ type NativePushNotificationIOSEventDefinitions = {
   ],
   localNotificationReceived: [{...}],
 };
+console.warn(`Platform.OS=${Platform.OS}`);
+console.warn(`NativePushNotificationManagerIOS==null:${NativePushNotificationManagerIOS==null}`);
 
 const PushNotificationEmitter =
   new NativeEventEmitter<NativePushNotificationIOSEventDefinitions>(
