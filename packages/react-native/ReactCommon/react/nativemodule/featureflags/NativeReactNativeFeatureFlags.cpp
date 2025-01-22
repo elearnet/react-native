@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f39f57b7aafbbea465790baac247f548>>
+ * @generated SignedSource<<81f3e20643ddb2612eaa9276bb75e70e>>
  */
 
 /**
@@ -67,16 +67,6 @@ bool NativeReactNativeFeatureFlags::disableMountItemReorderingAndroid(
 bool NativeReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid();
-}
-
-bool NativeReactNativeFeatureFlags::enableAlignItemsBaselineOnFabricIOS(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::enableAlignItemsBaselineOnFabricIOS();
-}
-
-bool NativeReactNativeFeatureFlags::enableAndroidLineHeightCentering(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::enableAndroidLineHeightCentering();
 }
 
 bool NativeReactNativeFeatureFlags::enableBridgelessArchitecture(
@@ -232,6 +222,11 @@ bool NativeReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid(
 bool NativeReactNativeFeatureFlags::useAlwaysAvailableJSErrorHandling(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useAlwaysAvailableJSErrorHandling();
+}
+
+bool NativeReactNativeFeatureFlags::useEditTextStockAndroidFocusBehavior(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::useEditTextStockAndroidFocusBehavior();
 }
 
 bool NativeReactNativeFeatureFlags::useFabricInterop(

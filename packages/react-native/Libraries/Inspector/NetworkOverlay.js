@@ -12,7 +12,9 @@
 
 import type {RenderItemProps} from '@react-native/virtualized-lists';
 
-const ScrollView = require('../Components/ScrollView/ScrollView');
+import ScrollView from '../Components/ScrollView/ScrollView';
+import React from 'react';
+
 const TouchableHighlight = require('../Components/Touchable/TouchableHighlight');
 const View = require('../Components/View/View');
 const FlatList = require('../Lists/FlatList');
@@ -20,7 +22,6 @@ const XHRInterceptor = require('../Network/XHRInterceptor');
 const StyleSheet = require('../StyleSheet/StyleSheet');
 const Text = require('../Text/Text');
 const WebSocketInterceptor = require('../WebSocket/WebSocketInterceptor');
-const React = require('react');
 
 const LISTVIEW_CELL_HEIGHT = 15;
 
@@ -49,11 +50,11 @@ type NetworkRequestInfo = {
   ...
 };
 
-type Props = $ReadOnly<{||}>;
-type State = {|
+type Props = $ReadOnly<{}>;
+type State = {
   detailRowId: ?number,
   requests: Array<NetworkRequestInfo>,
-|};
+};
 
 function getStringByValue(value: any): string {
   if (value === undefined) {

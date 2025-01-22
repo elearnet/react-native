@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d24ff95d907838caea6eafaaa3faa8b1>>
+ * @generated SignedSource<<b7909873b5a9f72390db3a451f719b83>>
  * @flow strict
  */
 
@@ -56,8 +56,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   disableEventLoopOnBridgeless: Getter<boolean>,
   disableMountItemReorderingAndroid: Getter<boolean>,
   enableAccumulatedUpdatesInRawPropsAndroid: Getter<boolean>,
-  enableAlignItemsBaselineOnFabricIOS: Getter<boolean>,
-  enableAndroidLineHeightCentering: Getter<boolean>,
   enableBridgelessArchitecture: Getter<boolean>,
   enableCppPropsIteratorSetter: Getter<boolean>,
   enableDeletionOfUnmountedViews: Getter<boolean>,
@@ -89,6 +87,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   loadVectorDrawablesOnImages: Getter<boolean>,
   traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean>,
   useAlwaysAvailableJSErrorHandling: Getter<boolean>,
+  useEditTextStockAndroidFocusBehavior: Getter<boolean>,
   useFabricInterop: Getter<boolean>,
   useImmediateExecutorInAndroidBridgeless: Getter<boolean>,
   useNativeViewConfigsInBridgelessMode: Getter<boolean>,
@@ -209,14 +208,6 @@ export const disableMountItemReorderingAndroid: Getter<boolean> = createNativeFl
  * When enabled, Andoid will accumulate updates in rawProps to reduce the number of mounting instructions for cascading rerenders.
  */
 export const enableAccumulatedUpdatesInRawPropsAndroid: Getter<boolean> = createNativeFlagGetter('enableAccumulatedUpdatesInRawPropsAndroid', false);
-/**
- * Kill-switch to turn off support for aling-items:baseline on Fabric iOS.
- */
-export const enableAlignItemsBaselineOnFabricIOS: Getter<boolean> = createNativeFlagGetter('enableAlignItemsBaselineOnFabricIOS', true);
-/**
- * When enabled, custom line height calculation will be centered from top to bottom.
- */
-export const enableAndroidLineHeightCentering: Getter<boolean> = createNativeFlagGetter('enableAndroidLineHeightCentering', true);
 /**
  * Feature flag to enable the new bridgeless architecture. Note: Enabling this will force enable the following flags: `useTurboModules` & `enableFabricRenderer.
  */
@@ -341,6 +332,10 @@ export const traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean> = creat
  * In Bridgeless mode, use the always available javascript error reporting pipeline.
  */
 export const useAlwaysAvailableJSErrorHandling: Getter<boolean> = createNativeFlagGetter('useAlwaysAvailableJSErrorHandling', false);
+/**
+ * If true, focusing in ReactEditText will mainly use stock Android requestFocus() behavior. If false it will use legacy custom focus behavior.
+ */
+export const useEditTextStockAndroidFocusBehavior: Getter<boolean> = createNativeFlagGetter('useEditTextStockAndroidFocusBehavior', true);
 /**
  * Should this application enable the Fabric Interop Layer for Android? If yes, the application will behave so that it can accept non-Fabric components and render them on Fabric. This toggle is controlling extra logic such as custom event dispatching that are needed for the Fabric Interop Layer to work correctly.
  */

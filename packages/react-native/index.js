@@ -122,7 +122,8 @@ module.exports = {
   },
   // $FlowFixMe[value-as-type]
   get DrawerLayoutAndroid(): DrawerLayoutAndroid {
-    return require('./Libraries/Components/DrawerAndroid/DrawerLayoutAndroid');
+    return require('./Libraries/Components/DrawerAndroid/DrawerLayoutAndroid')
+      .default;
   },
   get FlatList(): FlatList {
     return require('./Libraries/Lists/FlatList');
@@ -212,10 +213,10 @@ module.exports = {
 
   // APIs
   get ActionSheetIOS(): ActionSheetIOS {
-    return require('./Libraries/ActionSheetIOS/ActionSheetIOS');
+    return require('./Libraries/ActionSheetIOS/ActionSheetIOS').default;
   },
   get Alert(): Alert {
-    return require('./Libraries/Alert/Alert');
+    return require('./Libraries/Alert/Alert').default;
   },
   // Include any types exported in the Animated module together with its default export, so
   // you can references types such as Animated.Numeric
@@ -230,7 +231,7 @@ module.exports = {
     return require('./Libraries/ReactNative/AppRegistry');
   },
   get AppState(): AppState {
-    return require('./Libraries/AppState/AppState');
+    return require('./Libraries/AppState/AppState').default;
   },
   get BackHandler(): BackHandler {
     return require('./Libraries/Utilities/BackHandler');
@@ -242,7 +243,7 @@ module.exports = {
         "It can now be installed and imported from '@react-native-clipboard/clipboard' instead of 'react-native'. " +
         'See https://github.com/react-native-clipboard/clipboard',
     );
-    return require('./Libraries/Components/Clipboard/Clipboard');
+    return require('./Libraries/Components/Clipboard/Clipboard').default;
   },
   get DeviceInfo(): DeviceInfo {
     return require('./Libraries/Utilities/DeviceInfo');
@@ -269,7 +270,7 @@ module.exports = {
     return require('./Libraries/Interaction/InteractionManager');
   },
   get Keyboard(): Keyboard {
-    return require('./Libraries/Components/Keyboard/Keyboard');
+    return require('./Libraries/Components/Keyboard/Keyboard').default;
   },
   get LayoutAnimation(): LayoutAnimation {
     return require('./Libraries/LayoutAnimation/LayoutAnimation');
@@ -350,10 +351,10 @@ module.exports = {
     return require('./Libraries/UTFSequence').default;
   },
   get Vibration(): Vibration {
-    return require('./Libraries/Vibration/Vibration');
+    return require('./Libraries/Vibration/Vibration').default;
   },
   get YellowBox(): YellowBox {
-    return require('./Libraries/YellowBox/YellowBoxDeprecated');
+    return require('./Libraries/YellowBox/YellowBoxDeprecated').default;
   },
 
   // Plugins
@@ -368,7 +369,7 @@ module.exports = {
     return require('./Libraries/EventEmitter/RCTNativeAppEventEmitter');
   },
   get NativeModules(): NativeModules {
-    return require('./Libraries/BatchedBridge/NativeModules');
+    return require('./Libraries/BatchedBridge/NativeModules').default;
   },
   get Platform(): Platform {
     return require('./Libraries/Utilities/Platform');

@@ -38,7 +38,7 @@ import typeof Platform from '../Utilities/Platform';
 // flowlint unsafe-getters-setters:off
 module.exports = {
   get BatchedBridge(): BatchedBridge {
-    return require('../BatchedBridge/BatchedBridge');
+    return require('../BatchedBridge/BatchedBridge').default;
   },
   get ExceptionsManager(): ExceptionsManager {
     return require('../Core/ExceptionsManager');
@@ -77,7 +77,8 @@ module.exports = {
     return require('../Core/ReactFiberErrorDialog').default;
   },
   get legacySendAccessibilityEvent(): legacySendAccessibilityEvent {
-    return require('../Components/AccessibilityInfo/legacySendAccessibilityEvent');
+    return require('../Components/AccessibilityInfo/legacySendAccessibilityEvent')
+      .default;
   },
   get RawEventEmitter(): RawEventEmitter {
     return require('../Core/RawEventEmitter').default;

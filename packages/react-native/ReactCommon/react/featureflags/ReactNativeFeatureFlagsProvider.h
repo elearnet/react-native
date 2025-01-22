@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8b3463fbed7d11f7f067593afdd662c9>>
+ * @generated SignedSource<<a36169cf43b41914533e7b5c17ec053c>>
  */
 
 /**
@@ -30,8 +30,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool disableEventLoopOnBridgeless() = 0;
   virtual bool disableMountItemReorderingAndroid() = 0;
   virtual bool enableAccumulatedUpdatesInRawPropsAndroid() = 0;
-  virtual bool enableAlignItemsBaselineOnFabricIOS() = 0;
-  virtual bool enableAndroidLineHeightCentering() = 0;
   virtual bool enableBridgelessArchitecture() = 0;
   virtual bool enableCppPropsIteratorSetter() = 0;
   virtual bool enableDeletionOfUnmountedViews() = 0;
@@ -63,6 +61,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool loadVectorDrawablesOnImages() = 0;
   virtual bool traceTurboModulePromiseRejectionsOnAndroid() = 0;
   virtual bool useAlwaysAvailableJSErrorHandling() = 0;
+  virtual bool useEditTextStockAndroidFocusBehavior() = 0;
   virtual bool useFabricInterop() = 0;
   virtual bool useImmediateExecutorInAndroidBridgeless() = 0;
   virtual bool useNativeViewConfigsInBridgelessMode() = 0;
