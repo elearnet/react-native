@@ -982,13 +982,14 @@ export default class Device {
       } else {
         let file;
         try {
+          debugger;
           file = fs.readFileSync(
             path.resolve(this.#projectRoot, pathToSource),
             'utf8',
           );
         } catch (err) {
           sendErrorResponse(
-            `Failed to fetch source file ${pathToSource}: ${err.message}`,
+            `Failed to fetch source file hahaha ${pathToSource}: ${err.message}`,
           );
         }
         if (file != null) {

@@ -38,9 +38,9 @@ type NativePushNotificationIOSEventDefinitions = {
   ],
   localNotificationReceived: [{...}],
 };
-console.warn(`Platform.OS=${Platform.OS}`);
-console.warn(`NativePushNotificationManagerIOS==null:${NativePushNotificationManagerIOS==null}`);
-
+console.warn(`Platform.OS=${Platform.OS}`); //ios
+console.warn(`NativePushNotificationManagerIOS==null:${NativePushNotificationManagerIOS==null}`); //true
+// NativePushNotificationManagerIOS is null. why?
 const PushNotificationEmitter =
   new NativeEventEmitter<NativePushNotificationIOSEventDefinitions>(
     // T88715063: NativeEventEmitter only used this parameter on iOS. Now it uses it on all platforms, so this code was modified automatically to preserve its behavior
