@@ -15,13 +15,15 @@ import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
 
 import React from 'react';
 
-const TouchableHighlight = require('../Components/Touchable/TouchableHighlight');
-const TouchableWithoutFeedback = require('../Components/Touchable/TouchableWithoutFeedback');
+const TouchableHighlight =
+  require('../Components/Touchable/TouchableHighlight').default;
+const TouchableWithoutFeedback =
+  require('../Components/Touchable/TouchableWithoutFeedback').default;
 const View = require('../Components/View/View');
 const flattenStyle = require('../StyleSheet/flattenStyle');
 const StyleSheet = require('../StyleSheet/StyleSheet');
-const Text = require('../Text/Text');
-const mapWithSeparator = require('../Utilities/mapWithSeparator');
+const Text = require('../Text/Text').default;
+const mapWithSeparator = require('../Utilities/mapWithSeparator').default;
 const BoxInspector = require('./BoxInspector');
 const StyleInspector = require('./StyleInspector');
 

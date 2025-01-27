@@ -460,10 +460,6 @@ public abstract interface class com/facebook/react/animated/AnimatedNodeValueLis
 	public abstract fun onValueUpdate (D)V
 }
 
-public abstract interface class com/facebook/react/animated/AnimatedNodeWithUpdateableConfig {
-	public abstract fun onUpdateConfig (Lcom/facebook/react/bridge/ReadableMap;)V
-}
-
 public final class com/facebook/react/animated/InterpolationAnimatedNode : com/facebook/react/animated/ValueAnimatedNode {
 	public static final field Companion Lcom/facebook/react/animated/InterpolationAnimatedNode$Companion;
 	public static final field EXTRAPOLATE_TYPE_CLAMP Ljava/lang/String;
@@ -1128,12 +1124,12 @@ public abstract class com/facebook/react/bridge/ReactApplicationContext : com/fa
 	public fun <init> (Landroid/content/Context;)V
 }
 
-public class com/facebook/react/bridge/ReactBridge {
-	public fun <init> ()V
-	public static fun getLoadEndTime ()J
-	public static fun getLoadStartTime ()J
-	public static fun isInitialized ()Z
-	public static fun staticInit ()V
+public final class com/facebook/react/bridge/ReactBridge {
+	public static final field INSTANCE Lcom/facebook/react/bridge/ReactBridge;
+	public static final fun getLoadEndTime ()J
+	public static final fun getLoadStartTime ()J
+	public static final fun isInitialized ()Z
+	public static final fun staticInit ()V
 }
 
 public abstract class com/facebook/react/bridge/ReactContext : android/content/ContextWrapper {
@@ -2622,7 +2618,6 @@ public class com/facebook/react/fabric/FabricUIManager : com/facebook/react/brid
 	public fun resolveView (I)Landroid/view/View;
 	public fun sendAccessibilityEvent (II)V
 	public fun sendAccessibilityEventFromJS (IILjava/lang/String;)V
-	public fun setBinding (Lcom/facebook/react/fabric/FabricUIManagerBinding;)V
 	public fun setJSResponder (IIIZ)V
 	public fun startSurface (Landroid/view/View;Ljava/lang/String;Lcom/facebook/react/bridge/WritableMap;II)I
 	public fun startSurface (Lcom/facebook/react/interfaces/fabric/SurfaceHandler;Landroid/content/Context;Landroid/view/View;)V
@@ -2633,7 +2628,7 @@ public class com/facebook/react/fabric/FabricUIManager : com/facebook/react/brid
 	public fun updateRootLayoutSpecs (IIIII)V
 }
 
-public class com/facebook/react/fabric/FabricUIManagerProviderImpl : com/facebook/react/bridge/UIManagerProvider {
+public final class com/facebook/react/fabric/FabricUIManagerProviderImpl : com/facebook/react/bridge/UIManagerProvider {
 	public fun <init> (Lcom/facebook/react/fabric/ComponentFactory;Lcom/facebook/react/uimanager/ViewManagerRegistry;)V
 	public fun createUIManager (Lcom/facebook/react/bridge/ReactApplicationContext;)Lcom/facebook/react/bridge/UIManager;
 }

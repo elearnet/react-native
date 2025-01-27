@@ -15,11 +15,12 @@ import type {ElementsHierarchy, InspectedElement} from './Inspector';
 import SafeAreaView from '../Components/SafeAreaView/SafeAreaView';
 import React from 'react';
 
-const ScrollView = require('../Components/ScrollView/ScrollView');
-const TouchableHighlight = require('../Components/Touchable/TouchableHighlight');
+const ScrollView = require('../Components/ScrollView/ScrollView').default;
+const TouchableHighlight =
+  require('../Components/Touchable/TouchableHighlight').default;
 const View = require('../Components/View/View');
 const StyleSheet = require('../StyleSheet/StyleSheet');
-const Text = require('../Text/Text');
+const Text = require('../Text/Text').default;
 const ElementProperties = require('./ElementProperties');
 const NetworkOverlay = require('./NetworkOverlay');
 const PerformanceOverlay = require('./PerformanceOverlay');

@@ -35,28 +35,15 @@ struct CSSDataTypeParser<CSSRatio> {
     if (isValidRatioPart(token.numericValue())) {
       float numerator = token.numericValue();
 
-      CSSSyntaxParser lookaheadParser{parser};
-
-      auto hasSolidus = lookaheadParser.consumeComponentValue<bool>(
-          CSSComponentValueDelimiter::Whitespace,
-          [&](const CSSPreservedToken& token) {
-            return token.type() == CSSTokenType::Delim &&
-                token.stringValue() == "/";
-          });
-
-      if (!hasSolidus) {
-        parser = lookaheadParser;
-        return CSSRatio{numerator, 1.0f};
-      }
-
-      auto denominator = parseNextCSSValue<CSSNumber>(
-          lookaheadParser, CSSComponentValueDelimiter::Whitespace);
-
+      auto denominator =
+          peekNextCSSValue<CSSNumber>(parser, CSSDelimiter::Solidus);
       if (std::holds_alternative<CSSNumber>(denominator) &&
           isValidRatioPart(std::get<CSSNumber>(denominator).value)) {
-        parser = lookaheadParser;
+        parser.consumeComponentValue(CSSDelimiter::Solidus);
         return CSSRatio{numerator, std::get<CSSNumber>(denominator).value};
       }
+
+      return CSSRatio{numerator, 1.0f};
     }
 
     return {};
@@ -67,8 +54,7 @@ struct CSSDataTypeParser<CSSRatio> {
     // If either number in the <ratio> is 0 or infinite, it represents a
     // degenerate ratio (and, generally, won’t do anything).
     // https://www.w3.org/TR/css-values-4/#ratios
-    return value > 0.0f && value != +std::numeric_limits<float>::infinity() &&
-        value != -std::numeric_limits<float>::infinity();
+    return value > 0.0f && value != +std::numeric_limits<float>::infinity();
   }
 };
 

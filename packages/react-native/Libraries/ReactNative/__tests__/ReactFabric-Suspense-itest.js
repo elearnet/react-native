@@ -11,7 +11,7 @@
 
 import '../../Core/InitializeCore.js';
 import View from '../../Components/View/View';
-import * as Fantom from '@react-native/fantom';
+import Fantom from '@react-native/fantom';
 import * as React from 'react';
 import {Suspense, startTransition} from 'react';
 
@@ -184,8 +184,6 @@ describe('Suspense', () => {
     );
 
     expect(resolveFunction).toBeNull();
-
-    root.destroy();
   });
 
   // TODO(T207868872): this test only succeeds with enableFabricCompleteRootInCommitPhase enabled.
@@ -239,7 +237,5 @@ describe('Suspense', () => {
     expect(mountingLogs[0]).toBe(
       'create view type: `View` nativeId: `square with data: red`',
     );
-
-    root.destroy();
   });
 });

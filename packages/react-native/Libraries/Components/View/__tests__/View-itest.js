@@ -11,7 +11,7 @@
 
 import '../../../Core/InitializeCore.js';
 
-import * as Fantom from '@react-native/fantom';
+import Fantom from '@react-native/fantom';
 import * as React from 'react';
 
 const View = require('../View');
@@ -43,8 +43,6 @@ describe('width and height style', () => {
         width="20.000000%"
       />,
     );
-
-    root.destroy();
   });
 
   it('handles numeric values passed in as strings', () => {
@@ -71,8 +69,6 @@ describe('width and height style', () => {
         width="5.000000"
       />,
     );
-
-    root.destroy();
   });
 
   it('handles invalid values, falling back to default', () => {
@@ -105,8 +101,6 @@ describe('width and height style', () => {
         width="undefined"
       />,
     );
-
-    root.destroy();
   });
 });
 
@@ -141,8 +135,6 @@ describe('margin style', () => {
         width="5.000000"
       />,
     );
-
-    root.destroy();
   });
 
   it('handles numeric values passed in as strings', () => {
@@ -175,7 +167,5 @@ describe('margin style', () => {
         width="5.000000"
       />,
     );
-
-    root.destroy();
   });
 });

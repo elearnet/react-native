@@ -10,17 +10,12 @@
 
 'use strict';
 
-if (__DEV__) {
-  // React DevTools need to be set up before the console.error patch.
-  require('./setUpReactDevTools');
-}
-
 if (global.RN$useAlwaysAvailableJSErrorHandling !== true) {
   /**
    * Sets up the console and exception handling (redbox) for React Native.
    * You can use this module directly, or just require InitializeCore.
    */
-  const ExceptionsManager = require('./ExceptionsManager');
+  const ExceptionsManager = require('./ExceptionsManager').default;
   ExceptionsManager.installConsoleErrorReporter();
 
   // Set up error handler

@@ -15,13 +15,15 @@ import type {RenderItemProps} from '@react-native/virtualized-lists';
 import ScrollView from '../Components/ScrollView/ScrollView';
 import React from 'react';
 
-const TouchableHighlight = require('../Components/Touchable/TouchableHighlight');
+const TouchableHighlight =
+  require('../Components/Touchable/TouchableHighlight').default;
 const View = require('../Components/View/View');
 const FlatList = require('../Lists/FlatList');
 const XHRInterceptor = require('../Network/XHRInterceptor');
 const StyleSheet = require('../StyleSheet/StyleSheet');
-const Text = require('../Text/Text');
-const WebSocketInterceptor = require('../WebSocket/WebSocketInterceptor');
+const Text = require('../Text/Text').default;
+const WebSocketInterceptor =
+  require('../WebSocket/WebSocketInterceptor').default;
 
 const LISTVIEW_CELL_HEIGHT = 15;
 
@@ -107,7 +109,7 @@ class NetworkOverlay extends React.Component<Props, State> {
   };
 
   // Map of `socketId` -> `index in `this.state.requests`.
-  _socketIdMap: {[string]: number} = {};
+  _socketIdMap: {[number]: number} = {};
   // Map of `xhr._index` -> `index in `this.state.requests`.
   _xhrIdMap: {[key: number]: number, ...} = {};
 
@@ -276,7 +278,7 @@ class NetworkOverlay extends React.Component<Props, State> {
       });
     });
 
-    WebSocketInterceptor.setOnMessageCallback((socketId, message) => {
+    WebSocketInterceptor.setOnMessageCallback((message, socketId) => {
       const socketIndex = this._socketIdMap[socketId];
       if (socketIndex === undefined) {
         return;
@@ -295,7 +297,7 @@ class NetworkOverlay extends React.Component<Props, State> {
       });
     });
 
-    WebSocketInterceptor.setOnCloseCallback((socketId, message) => {
+    WebSocketInterceptor.setOnCloseCallback((message, socketId) => {
       const socketIndex = this._socketIdMap[socketId];
       if (socketIndex === undefined) {
         return;
@@ -309,7 +311,7 @@ class NetworkOverlay extends React.Component<Props, State> {
       });
     });
 
-    WebSocketInterceptor.setOnErrorCallback((socketId, message) => {
+    WebSocketInterceptor.setOnErrorCallback((message, socketId) => {
       const socketIndex = this._socketIdMap[socketId];
       if (socketIndex === undefined) {
         return;
