@@ -35,21 +35,22 @@ declare export default typeof NativeActionSheetManager;
 "
 `;
 
-exports[`public API should not change unintentionally Libraries/Alert/Alert.js 1`] = `
+exports[`public API should not change unintentionally Libraries/Alert/Alert.flow.js 1`] = `
 "export type AlertType =
   | \\"default\\"
   | \\"plain-text\\"
   | \\"secure-text\\"
   | \\"login-password\\";
 export type AlertButtonStyle = \\"default\\" | \\"cancel\\" | \\"destructive\\";
-export type Buttons = Array<{
+export type AlertButton = {
   text?: string,
-  onPress?: ?Function,
+  onPress?: ?((value?: string) => any) | ?Function,
   isPreferred?: boolean,
   style?: AlertButtonStyle,
   ...
-}>;
-type Options = {
+};
+export type Buttons = Array<AlertButton>;
+export type AlertOptions = {
   cancelable?: ?boolean,
   userInterfaceStyle?: \\"unspecified\\" | \\"light\\" | \\"dark\\",
   onDismiss?: ?() => void,
@@ -60,7 +61,7 @@ declare class Alert {
     title: ?string,
     message?: ?string,
     buttons?: Buttons,
-    options?: Options
+    options?: AlertOptions
   ): void;
   static prompt(
     title: ?string,
@@ -69,7 +70,30 @@ declare class Alert {
     type?: ?AlertType,
     defaultValue?: string,
     keyboardType?: string,
-    options?: Options
+    options?: AlertOptions
+  ): void;
+}
+declare export default typeof Alert;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Alert/Alert.js 1`] = `
+"export type * from \\"./Alert.flow\\";
+declare class Alert {
+  static alert(
+    title: ?string,
+    message?: ?string,
+    buttons?: Buttons,
+    options?: AlertOptions
+  ): void;
+  static prompt(
+    title: ?string,
+    message?: ?string,
+    callbackOrButtons?: ?(((text: string) => void) | Buttons),
+    type?: ?AlertType,
+    defaultValue?: string,
+    keyboardType?: string,
+    options?: AlertOptions
   ): void;
 }
 declare export default typeof Alert;
@@ -79,6 +103,17 @@ declare export default typeof Alert;
 exports[`public API should not change unintentionally Libraries/Alert/NativeAlertManager.js 1`] = `
 "export * from \\"../../src/private/specs/modules/NativeAlertManager\\";
 declare export default typeof NativeAlertManager;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Alert/RCTAlertManager.flow.js 1`] = `
+"declare const RCTAlertManager: {
+  alertWithArgs(
+    args: Args,
+    callback: (id: number, value: string) => void
+  ): void,
+};
+declare export default typeof RCTAlertManager;
 "
 `;
 
@@ -1418,6 +1453,52 @@ declare export default typeof File;
 `;
 
 exports[`public API should not change unintentionally Libraries/Blob/FileReader.js 1`] = `
+"declare export default FileReader;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Blob/FileReader_new.js 1`] = `
+"type ReadyState = 0 | 1 | 2;
+type ReaderResult = string | ArrayBuffer;
+declare class FileReader extends EventTarget {
+  static EMPTY: number;
+  static LOADING: number;
+  static DONE: number;
+  EMPTY: number;
+  LOADING: number;
+  DONE: number;
+  _readyState: ReadyState;
+  _error: ?Error;
+  _result: ?ReaderResult;
+  _aborted: boolean;
+  constructor(): void;
+  _reset(): void;
+  _setReadyState(newState: ReadyState): void;
+  readAsArrayBuffer(blob: ?Blob): void;
+  readAsDataURL(blob: ?Blob): void;
+  readAsText(blob: ?Blob, encoding: string): void;
+  abort(): void;
+  get readyState(): ReadyState;
+  get error(): ?Error;
+  get result(): ?ReaderResult;
+  get onabort(): EventCallback | null;
+  set onabort(listener: ?EventCallback): void;
+  get onerror(): EventCallback | null;
+  set onerror(listener: ?EventCallback): void;
+  get onload(): EventCallback | null;
+  set onload(listener: ?EventCallback): void;
+  get onloadstart(): EventCallback | null;
+  set onloadstart(listener: ?EventCallback): void;
+  get onloadend(): EventCallback | null;
+  set onloadend(listener: ?EventCallback): void;
+  get onprogress(): EventCallback | null;
+  set onprogress(listener: ?EventCallback): void;
+}
+declare export default typeof FileReader;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Blob/FileReader_old.js 1`] = `
 "type ReadyState = 0 | 1 | 2;
 type ReaderResult = string | ArrayBuffer;
 declare class FileReader extends EventTarget {
@@ -2795,7 +2876,7 @@ exports[`public API should not change unintentionally Libraries/Components/TextI
   PartialViewConfig,
   { uiViewClassName: string },
 >;
-declare module.exports: PartialViewConfigWithoutName;
+declare export default PartialViewConfigWithoutName;
 "
 `;
 
@@ -3484,7 +3565,7 @@ export type TextInputComponentStatics = $ReadOnly<{
     blurTextInput: typeof TextInputState.blurTextInput,
   }>,
 }>;
-declare module.exports: TextInputType;
+declare export default TextInputType;
 "
 `;
 
@@ -3517,7 +3598,7 @@ declare function blurTextInput(textField: ?HostInstance): void;
 declare function registerInput(textField: HostInstance): void;
 declare function unregisterInput(textField: HostInstance): void;
 declare function isTextInput(textField: HostInstance): boolean;
-declare module.exports: {
+declare const TextInputState: {
   currentlyFocusedInput: currentlyFocusedInput,
   focusInput: focusInput,
   blurInput: blurInput,
@@ -3530,6 +3611,7 @@ declare module.exports: {
   unregisterInput: unregisterInput,
   isTextInput: isTextInput,
 };
+declare export default typeof TextInputState;
 "
 `;
 
@@ -3556,7 +3638,7 @@ exports[`public API should not change unintentionally Libraries/Components/Toast
     yOffset: number
   ) => void,
 };
-declare module.exports: ToastAndroid;
+declare export default typeof ToastAndroid;
 "
 `;
 
@@ -3898,13 +3980,13 @@ exports[`public API should not change unintentionally Libraries/Components/Unimp
 declare class UnimplementedView extends React.Component<Props> {
   render(): React.Node;
 }
-declare module.exports: UnimplementedView;
+declare export default typeof UnimplementedView;
 "
 `;
 
 exports[`public API should not change unintentionally Libraries/Components/View/ReactNativeStyleAttributes.js 1`] = `
 "declare const ReactNativeStyleAttributes: { [string]: AnyAttributeType, ... };
-declare module.exports: ReactNativeStyleAttributes;
+declare export default typeof ReactNativeStyleAttributes;
 "
 `;
 
@@ -3940,7 +4022,7 @@ exports[`public API should not change unintentionally Libraries/Components/View/
 };
 declare const RCTView: { ...UIView, removeClippedSubviews: true };
 declare const ReactNativeViewAttributes: { UIView: UIView, RCTView: RCTView };
-declare module.exports: ReactNativeViewAttributes;
+declare export default typeof ReactNativeViewAttributes;
 "
 `;
 
@@ -3950,7 +4032,7 @@ declare const View: component(
   ref: React.RefSetter<React.ElementRef<typeof ViewNativeComponent>>,
   ...props: ViewProps
 );
-declare module.exports: View;
+declare export default typeof View;
 "
 `;
 
@@ -5099,227 +5181,6 @@ declare module.exports: resolveAssetSource;
 "
 `;
 
-exports[`public API should not change unintentionally Libraries/Inspector/BorderBox.js 1`] = `
-"type Props = $ReadOnly<{
-  children: React.Node,
-  box?: ?$ReadOnly<{
-    top: number,
-    right: number,
-    bottom: number,
-    left: number,
-    ...
-  }>,
-  style?: ViewStyleProp,
-}>;
-declare function BorderBox(Props): React.Node;
-declare module.exports: BorderBox;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/BoxInspector.js 1`] = `
-"type BoxInspectorProps = $ReadOnly<{
-  style: ViewStyleProp,
-  frame: ?InspectedElementFrame,
-}>;
-declare function BoxInspector(BoxInspectorProps): React.Node;
-declare module.exports: BoxInspector;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/ElementBox.js 1`] = `
-"type Props = $ReadOnly<{
-  frame: InspectedElementFrame,
-  style?: ?ViewStyleProp,
-}>;
-declare function ElementBox(Props): React.Node;
-declare module.exports: ElementBox;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/ElementProperties.js 1`] = `
-"type Props = $ReadOnly<{
-  hierarchy: ?InspectorData[\\"hierarchy\\"],
-  style?: ?ViewStyleProp,
-  frame?: ?Object,
-  selection?: ?number,
-  setSelection?: (number) => mixed,
-}>;
-declare class ElementProperties extends React.Component<Props> {
-  render(): React.Node;
-}
-declare module.exports: ElementProperties;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/Inspector.js 1`] = `
-"export type InspectedElementFrame = TouchedViewDataAtPoint[\\"frame\\"];
-export type InspectedElement = $ReadOnly<{
-  frame: InspectedElementFrame,
-  style?: ViewStyleProp,
-}>;
-export type ElementsHierarchy = InspectorData[\\"hierarchy\\"];
-type Props = {
-  inspectedViewRef: InspectedViewRef,
-  onRequestRerenderApp: () => void,
-  reactDevToolsAgent?: ReactDevToolsAgent,
-};
-declare function Inspector(Props): React.Node;
-declare module.exports: Inspector;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/InspectorOverlay.js 1`] = `
-"type Props = $ReadOnly<{
-  inspected?: ?InspectedElement,
-  onTouchPoint: (locationX: number, locationY: number) => void,
-}>;
-declare function InspectorOverlay(Props): React.Node;
-declare module.exports: InspectorOverlay;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/InspectorPanel.js 1`] = `
-"type Props = $ReadOnly<{
-  devtoolsIsOpen: boolean,
-  inspecting: boolean,
-  setInspecting: (val: boolean) => void,
-  perfing: boolean,
-  setPerfing: (val: boolean) => void,
-  touchTargeting: boolean,
-  setTouchTargeting: (val: boolean) => void,
-  networking: boolean,
-  setNetworking: (val: boolean) => void,
-  hierarchy?: ?ElementsHierarchy,
-  selection?: ?number,
-  setSelection: (number) => mixed,
-  inspected?: ?InspectedElement,
-}>;
-declare class InspectorPanel extends React.Component<Props> {
-  renderWaiting(): React.Node;
-  render(): React.Node;
-}
-declare module.exports: InspectorPanel;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/NetworkOverlay.js 1`] = `
-"type NetworkRequestInfo = {
-  id: number,
-  type?: string,
-  url?: string,
-  method?: string,
-  status?: number,
-  dataSent?: any,
-  responseContentType?: string,
-  responseSize?: number,
-  requestHeaders?: Object,
-  responseHeaders?: string,
-  response?: Object | string,
-  responseURL?: string,
-  responseType?: string,
-  timeout?: number,
-  closeReason?: string,
-  messages?: string,
-  serverClose?: Object,
-  serverError?: Object,
-  ...
-};
-type Props = $ReadOnly<{}>;
-type State = {
-  detailRowId: ?number,
-  requests: Array<NetworkRequestInfo>,
-};
-declare class NetworkOverlay extends React.Component<Props, State> {
-  _requestsListView: ?React.ElementRef<Class<FlatList<NetworkRequestInfo>>>;
-  _detailScrollView: ?React.ElementRef<typeof ScrollView>;
-  _requestsListViewScrollMetrics: {
-    contentLength: number,
-    offset: number,
-    visibleLength: number,
-  };
-  _socketIdMap: { [number]: number };
-  _xhrIdMap: { [key: number]: number, ... };
-  state: State;
-  _enableXHRInterception(): void;
-  _enableWebSocketInterception(): void;
-  componentDidMount(): void;
-  componentWillUnmount(): void;
-  _renderItem: $FlowFixMe;
-  _renderItemDetail(id: number): React.Node;
-  _indicateAdditionalRequests: $FlowFixMe;
-  _captureRequestsListView: $FlowFixMe;
-  _requestsListViewOnScroll: $FlowFixMe;
-  _pressRow(rowId: number): void;
-  _scrollDetailToTop: $FlowFixMe;
-  _closeButtonClicked: $FlowFixMe;
-  _getRequestIndexByXHRID(index: number): number;
-  render(): React.Node;
-}
-declare module.exports: NetworkOverlay;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/PerformanceOverlay.js 1`] = `
-"declare class PerformanceOverlay extends React.Component<{ ... }> {
-  render(): React.Node;
-}
-declare module.exports: PerformanceOverlay;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/ReactDevToolsOverlay.js 1`] = `
-"type Props = {
-  inspectedViewRef: InspectedViewRef,
-  reactDevToolsAgent: ReactDevToolsAgent,
-};
-declare export default function ReactDevToolsOverlay(Props): React.Node;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/StyleInspector.js 1`] = `
-"type Props = $ReadOnly<{
-  style?: ?____FlattenStyleProp_Internal<ViewStyleProp>,
-}>;
-declare function StyleInspector(Props): React.Node;
-declare module.exports: StyleInspector;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/getInspectorDataForViewAtPoint.js 1`] = `
-"export type ReactRenderer = {
-  rendererConfig: {
-    getInspectorDataForViewAtPoint: (
-      inspectedView: ?HostInstance,
-      locationX: number,
-      locationY: number,
-      callback: Function
-    ) => void,
-    ...
-  },
-};
-declare module.exports: (
-  inspectedView: ?HostInstance,
-  locationX: number,
-  locationY: number,
-  callback: (viewData: TouchedViewDataAtPoint) => boolean
-) => void;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Inspector/resolveBoxStyle.js 1`] = `
-"declare function resolveBoxStyle(
-  prefix: string,
-  style: Object
-): ?$ReadOnly<{
-  bottom: number,
-  left: number,
-  right: number,
-  top: number,
-}>;
-declare module.exports: resolveBoxStyle;
-"
-`;
-
 exports[`public API should not change unintentionally Libraries/Interaction/FrameRateLogger.js 1`] = `
 "declare const FrameRateLogger: {
   setGlobalOptions: (options: { debug?: boolean, ... }) => void,
@@ -5683,7 +5544,7 @@ declare export default typeof NativeLinkingManager;
 exports[`public API should not change unintentionally Libraries/Lists/FillRateHelper.js 1`] = `
 "declare const FillRateHelper: FillRateHelperType;
 export type { FillRateInfo } from \\"@react-native/virtualized-lists\\";
-declare module.exports: FillRateHelper;
+declare export default typeof FillRateHelper;
 "
 `;
 
@@ -5780,7 +5641,7 @@ declare class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   _memoizedRenderer: ReturnType<typeof memoizeOne>;
   render(): React.Node;
 }
-declare module.exports: FlatList;
+declare export default typeof FlatList;
 "
 `;
 
@@ -5914,13 +5775,12 @@ exports[`public API should not change unintentionally Libraries/Lists/Viewabilit
   ViewabilityConfigCallbackPair,
 } from \\"@react-native/virtualized-lists\\";
 declare const ViewabilityHelper: ViewabilityHelperType;
-declare module.exports: ViewabilityHelper;
+declare export default typeof ViewabilityHelper;
 "
 `;
 
 exports[`public API should not change unintentionally Libraries/Lists/VirtualizeUtils.js 1`] = `
-"declare const keyExtractor: KeyExtractorType;
-declare module.exports: { keyExtractor: keyExtractor };
+"declare export const keyExtractor: KeyExtractorType;
 "
 `;
 
@@ -5931,15 +5791,12 @@ export type {
   RenderItemType,
   Separators,
 } from \\"@react-native/virtualized-lists\\";
-declare module.exports: VirtualizedList;
+declare export default typeof VirtualizedList;
 "
 `;
 
 exports[`public API should not change unintentionally Libraries/Lists/VirtualizedListContext.js 1`] = `
-"declare const VirtualizedListContextResetter: VirtualizedListContextResetterType;
-declare module.exports: {
-  VirtualizedListContextResetter: VirtualizedListContextResetter,
-};
+"declare export const VirtualizedListContextResetter: VirtualizedListContextResetterType;
 "
 `;
 
@@ -5949,7 +5806,7 @@ export type {
   SectionBase,
   ScrollToLocationParamsType,
 } from \\"@react-native/virtualized-lists\\";
-declare module.exports: VirtualizedSectionList;
+declare export default typeof VirtualizedSectionList;
 "
 `;
 
@@ -6717,52 +6574,156 @@ exports[`public API should not change unintentionally Libraries/Network/RCTNetwo
 "
 `;
 
-exports[`public API should not change unintentionally Libraries/Network/XHRInterceptor.js 1`] = `
-"type XHRInterceptorOpenCallback = (
-  method: string,
-  url: string,
-  request: XMLHttpRequest
-) => void;
-type XHRInterceptorSendCallback = (
-  data: string,
-  request: XMLHttpRequest
-) => void;
-type XHRInterceptorRequestHeaderCallback = (
-  header: string,
-  value: string,
-  request: XMLHttpRequest
-) => void;
-type XHRInterceptorHeaderReceivedCallback = (
-  responseContentType: string | void,
-  responseSize: number | void,
-  allHeaders: string,
-  request: XMLHttpRequest
-) => void;
-type XHRInterceptorResponseCallback = (
-  status: number,
-  timeout: number,
-  response: string,
-  responseURL: string,
-  responseType: string,
-  request: XMLHttpRequest
-) => void;
-declare const XHRInterceptor: {
-  setOpenCallback(callback: XHRInterceptorOpenCallback): void,
-  setSendCallback(callback: XHRInterceptorSendCallback): void,
-  setHeaderReceivedCallback(
-    callback: XHRInterceptorHeaderReceivedCallback
-  ): void,
-  setResponseCallback(callback: XHRInterceptorResponseCallback): void,
-  setRequestHeaderCallback(callback: XHRInterceptorRequestHeaderCallback): void,
-  isInterceptorEnabled(): boolean,
-  enableInterception(): void,
-  disableInterception(): void,
-};
-declare module.exports: XHRInterceptor;
+exports[`public API should not change unintentionally Libraries/Network/XMLHttpRequest.js 1`] = `
+"export type * from \\"./XMLHttpRequest_old\\";
+declare module.exports: XMLHttpRequest;
 "
 `;
 
-exports[`public API should not change unintentionally Libraries/Network/XMLHttpRequest.js 1`] = `
+exports[`public API should not change unintentionally Libraries/Network/XMLHttpRequest_new.js 1`] = `
+"export type NativeResponseType = \\"base64\\" | \\"blob\\" | \\"text\\";
+export type ResponseType =
+  | \\"\\"
+  | \\"arraybuffer\\"
+  | \\"blob\\"
+  | \\"document\\"
+  | \\"json\\"
+  | \\"text\\";
+export type Response = ?Object | string;
+type XHRInterceptor = interface {
+  requestSent(id: number, url: string, method: string, headers: Object): void,
+  responseReceived(
+    id: number,
+    url: string,
+    status: number,
+    headers: Object
+  ): void,
+  dataReceived(id: number, data: string): void,
+  loadingFinished(id: number, encodedDataLength: number): void,
+  loadingFailed(id: number, error: string): void,
+};
+declare class XMLHttpRequestEventTarget extends EventTarget {
+  get onload(): EventCallback | null;
+  set onload(listener: ?EventCallback): void;
+  get onloadstart(): EventCallback | null;
+  set onloadstart(listener: ?EventCallback): void;
+  get onprogress(): EventCallback | null;
+  set onprogress(listener: ?EventCallback): void;
+  get ontimeout(): EventCallback | null;
+  set ontimeout(listener: ?EventCallback): void;
+  get onerror(): EventCallback | null;
+  set onerror(listener: ?EventCallback): void;
+  get onabort(): EventCallback | null;
+  set onabort(listener: ?EventCallback): void;
+  get onloadend(): EventCallback | null;
+  set onloadend(listener: ?EventCallback): void;
+}
+declare class XMLHttpRequest extends EventTarget {
+  static UNSENT: number;
+  static OPENED: number;
+  static HEADERS_RECEIVED: number;
+  static LOADING: number;
+  static DONE: number;
+  static _interceptor: ?XHRInterceptor;
+  static _profiling: boolean;
+  UNSENT: number;
+  OPENED: number;
+  HEADERS_RECEIVED: number;
+  LOADING: number;
+  DONE: number;
+  readyState: number;
+  responseHeaders: ?Object;
+  status: number;
+  timeout: number;
+  responseURL: ?string;
+  withCredentials: boolean;
+  upload: XMLHttpRequestEventTarget;
+  _requestId: ?number;
+  _subscriptions: Array<EventSubscription>;
+  _aborted: boolean;
+  _cachedResponse: Response;
+  _hasError: boolean;
+  _headers: Object;
+  _lowerCaseResponseHeaders: Object;
+  _method: ?string;
+  _perfKey: ?string;
+  _responseType: ResponseType;
+  _response: string;
+  _sent: boolean;
+  _url: ?string;
+  _timedOut: boolean;
+  _trackingName: string;
+  _incrementalEvents: boolean;
+  _startTime: ?number;
+  _performanceLogger: IPerformanceLogger;
+  static setInterceptor(interceptor: ?XHRInterceptor): void;
+  static enableProfiling(enableProfiling: boolean): void;
+  constructor(): void;
+  _reset(): void;
+  get responseType(): ResponseType;
+  set responseType(responseType: ResponseType): void;
+  get responseText(): string;
+  get response(): Response;
+  __didCreateRequest(requestId: number): void;
+  __didUploadProgress(requestId: number, progress: number, total: number): void;
+  __didReceiveResponse(
+    requestId: number,
+    status: number,
+    responseHeaders: ?Object,
+    responseURL: ?string
+  ): void;
+  __didReceiveData(requestId: number, response: string): void;
+  __didReceiveIncrementalData(
+    requestId: number,
+    responseText: string,
+    progress: number,
+    total: number
+  ): void;
+  __didReceiveDataProgress(
+    requestId: number,
+    loaded: number,
+    total: number
+  ): void;
+  __didCompleteResponse(
+    requestId: number,
+    error: string,
+    timeOutError: boolean
+  ): void;
+  _clearSubscriptions(): void;
+  getAllResponseHeaders(): ?string;
+  getResponseHeader(header: string): ?string;
+  setRequestHeader(header: string, value: any): void;
+  setTrackingName(trackingName: string): XMLHttpRequest;
+  setPerformanceLogger(performanceLogger: IPerformanceLogger): XMLHttpRequest;
+  open(method: string, url: string, async: ?boolean): void;
+  send(data: any): void;
+  abort(): void;
+  setResponseHeaders(responseHeaders: ?Object): void;
+  setReadyState(newState: number): void;
+  addEventListener(type: string, listener: EventListener | null): void;
+  _getMeasureURL(): string;
+  get onabort(): EventCallback | null;
+  set onabort(listener: ?EventCallback): void;
+  get onerror(): EventCallback | null;
+  set onerror(listener: ?EventCallback): void;
+  get onload(): EventCallback | null;
+  set onload(listener: ?EventCallback): void;
+  get onloadstart(): EventCallback | null;
+  set onloadstart(listener: ?EventCallback): void;
+  get onprogress(): EventCallback | null;
+  set onprogress(listener: ?EventCallback): void;
+  get ontimeout(): EventCallback | null;
+  set ontimeout(listener: ?EventCallback): void;
+  get onloadend(): EventCallback | null;
+  set onloadend(listener: ?EventCallback): void;
+  get onreadystatechange(): EventCallback | null;
+  set onreadystatechange(listener: ?EventCallback): void;
+}
+declare module.exports: XMLHttpRequest;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Network/XMLHttpRequest_old.js 1`] = `
 "export type NativeResponseType = \\"base64\\" | \\"blob\\" | \\"text\\";
 export type ResponseType =
   | \\"\\"
@@ -7292,7 +7253,7 @@ exports[`public API should not change unintentionally Libraries/ReactNative/AppC
   internal_excludeInspector?: boolean,
 }>;
 declare const AppContainer: component(...Props);
-declare module.exports: AppContainer;
+declare export default typeof AppContainer;
 "
 `;
 
@@ -7392,13 +7353,13 @@ declare const AppRegistry: {
   startHeadlessTask(taskId: number, taskKey: string, data: any): void,
   cancelHeadlessTask(taskId: number, taskKey: string): void,
 };
-declare module.exports: AppRegistry;
+declare export default typeof AppRegistry;
 "
 `;
 
 exports[`public API should not change unintentionally Libraries/ReactNative/BridgelessUIManager.js 1`] = `
 "declare const UIManagerJS: UIManagerJSInterface & { [string]: any };
-declare module.exports: UIManagerJS;
+declare export default typeof UIManagerJS;
 "
 `;
 
@@ -7429,14 +7390,17 @@ export interface Spec {
   +appendChild: (parentNode: Node, child: Node) => Node;
   +appendChildToSet: (childSet: NodeSet, child: Node) => void;
   +completeRoot: (rootTag: RootTag, childSet: NodeSet) => void;
-  +measure: (node: Node, callback: MeasureOnSuccessCallback) => void;
+  +measure: (
+    node: Node | NativeElementReference,
+    callback: MeasureOnSuccessCallback
+  ) => void;
   +measureInWindow: (
-    node: Node,
+    node: Node | NativeElementReference,
     callback: MeasureInWindowOnSuccessCallback
   ) => void;
   +measureLayout: (
-    node: Node,
-    relativeNode: Node,
+    node: Node | NativeElementReference,
+    relativeNode: Node | NativeElementReference,
     onFail: () => void,
     onSuccess: MeasureLayoutOnSuccessCallback
   ) => void;
@@ -7447,7 +7411,10 @@ export interface Spec {
   ) => void;
   +sendAccessibilityEvent: (node: Node, eventType: string) => void;
   +findShadowNodeByTag_DEPRECATED: (reactTag: number) => ?Node;
-  +setNativeProps: (node: Node, newProps: NodeProps) => void;
+  +setNativeProps: (
+    node: Node | NativeElementReference,
+    newProps: NodeProps
+  ) => void;
   +dispatchCommand: (
     node: Node,
     commandName: string,
@@ -7459,9 +7426,12 @@ export interface Spec {
     locationY: number,
     callback: (instanceHandle: ?InternalInstanceHandle) => void
   ) => void;
-  +compareDocumentPosition: (node: Node, otherNode: Node) => number;
+  +compareDocumentPosition: (
+    node: Node | NativeElementReference,
+    otherNode: Node | NativeElementReference
+  ) => number;
   +getBoundingClientRect: (
-    node: Node,
+    node: Node | NativeElementReference,
     includeTransform: boolean
   ) => ?[number, number, number, number];
 }
@@ -7475,7 +7445,7 @@ exports[`public API should not change unintentionally Libraries/ReactNative/Head
 `;
 
 exports[`public API should not change unintentionally Libraries/ReactNative/I18nManager.js 1`] = `
-"declare module.exports: {
+"declare export default {
   getConstants: () => I18nManagerConstants,
   allowRTL: (shouldAllow: boolean) => void,
   forceRTL: (shouldForce: boolean) => void,
@@ -7506,7 +7476,7 @@ declare export default typeof NativeUIManager;
 
 exports[`public API should not change unintentionally Libraries/ReactNative/PaperUIManager.js 1`] = `
 "declare const UIManagerJS: UIManagerJSInterface;
-declare module.exports: UIManagerJS;
+declare export default typeof UIManagerJS;
 "
 `;
 
@@ -7538,13 +7508,19 @@ exports[`public API should not change unintentionally Libraries/ReactNative/Reac
 `;
 
 exports[`public API should not change unintentionally Libraries/ReactNative/ReactFabricPublicInstance/ReactFabricPublicInstance.js 1`] = `
-"declare export function createPublicInstance(
+"type PublicRootInstance = null;
+declare export function createPublicRootInstance(
+  rootTag: RootTag
+): PublicRootInstance;
+declare export function createPublicInstance(
   tag: number,
   viewConfig: ViewConfig,
-  internalInstanceHandle: InternalInstanceHandle
+  internalInstanceHandle: InternalInstanceHandle,
+  ownerDocument: PublicRootInstance
 ): ReactFabricHostComponent | ReactNativeElement;
 declare export function createPublicTextInstance(
-  internalInstanceHandle: InternalInstanceHandle
+  internalInstanceHandle: InternalInstanceHandle,
+  ownerDocument: PublicRootInstance
 ): ReadOnlyText;
 declare export function getNativeTagFromPublicInstance(
   publicInstance: ReactFabricHostComponent | ReactNativeElement
@@ -7590,7 +7566,7 @@ exports[`public API should not change unintentionally Libraries/ReactNative/Reac
   shouldPressibilityUseW3CPointerEventsForHover: () => boolean,
 };
 declare const ReactNativeFeatureFlags: FeatureFlags;
-declare module.exports: ReactNativeFeatureFlags;
+declare export default typeof ReactNativeFeatureFlags;
 "
 `;
 
@@ -7601,7 +7577,7 @@ exports[`public API should not change unintentionally Libraries/ReactNative/Reac
 };
 export type RuntimeDiagnosticFlag = \\"early_js_errors\\" | \\"all\\";
 declare const ReactNativeRuntimeDiagnostics: RuntimeDiagnostics;
-declare module.exports: ReactNativeRuntimeDiagnostics;
+declare export default typeof ReactNativeRuntimeDiagnostics;
 "
 `;
 
@@ -7662,13 +7638,13 @@ declare export function createRootTag(rootTag: number | RootTag): RootTag;
 
 exports[`public API should not change unintentionally Libraries/ReactNative/UIManager.js 1`] = `
 "declare const UIManager: UIManagerJSInterface;
-declare module.exports: UIManager;
+declare export default typeof UIManager;
 "
 `;
 
 exports[`public API should not change unintentionally Libraries/ReactNative/UIManagerProperties.js 1`] = `
 "declare const UIManagerProperties: $ReadOnlyArray<string>;
-declare module.exports: UIManagerProperties;
+declare export default typeof UIManagerProperties;
 "
 `;
 
@@ -7682,7 +7658,7 @@ declare export default function getCachedComponentWithDisplayName(
 
 exports[`public API should not change unintentionally Libraries/ReactNative/getNativeComponentAttributes.js 1`] = `
 "declare function getNativeComponentAttributes(uiViewClassName: string): any;
-declare module.exports: getNativeComponentAttributes;
+declare export default typeof getNativeComponentAttributes;
 "
 `;
 
@@ -8372,7 +8348,7 @@ exports[`public API should not change unintentionally Libraries/StyleSheet/proce
 "declare function processColorArray(
   colors: ?$ReadOnlyArray<ColorValue>
 ): ?$ReadOnlyArray<ProcessedColorValue>;
-declare module.exports: processColorArray;
+declare export default typeof processColorArray;
 "
 `;
 
@@ -9408,6 +9384,78 @@ declare export default typeof NativeWebSocketModule;
 `;
 
 exports[`public API should not change unintentionally Libraries/WebSocket/WebSocket.js 1`] = `
+"declare export default WebSocket;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/WebSocket/WebSocket_new.js 1`] = `
+"type ArrayBufferView =
+  | Int8Array
+  | Uint8Array
+  | Uint8ClampedArray
+  | Int16Array
+  | Uint16Array
+  | Int32Array
+  | Uint32Array
+  | Float32Array
+  | Float64Array
+  | DataView;
+type BinaryType = \\"blob\\" | \\"arraybuffer\\";
+type WebSocketEventDefinitions = {
+  websocketOpen: [{ id: number, protocol: string }],
+  websocketClosed: [{ id: number, code: number, reason: string }],
+  websocketMessage: [
+    | { type: \\"binary\\", id: number, data: string }
+    | { type: \\"text\\", id: number, data: string }
+    | { type: \\"blob\\", id: number, data: BlobData },
+  ],
+  websocketFailed: [{ id: number, message: string }],
+};
+declare class WebSocket extends EventTarget {
+  static CONNECTING: number;
+  static OPEN: number;
+  static CLOSING: number;
+  static CLOSED: number;
+  CONNECTING: number;
+  OPEN: number;
+  CLOSING: number;
+  CLOSED: number;
+  _socketId: number;
+  _eventEmitter: NativeEventEmitter<WebSocketEventDefinitions>;
+  _subscriptions: Array<EventSubscription>;
+  _binaryType: ?BinaryType;
+  bufferedAmount: number;
+  extension: ?string;
+  protocol: ?string;
+  readyState: number;
+  url: ?string;
+  constructor(
+    url: string,
+    protocols: ?string | ?Array<string>,
+    options: ?{ headers?: { origin?: string, ... }, ... }
+  ): void;
+  get binaryType(): ?BinaryType;
+  set binaryType(binaryType: BinaryType): void;
+  close(code?: number, reason?: string): void;
+  send(data: string | ArrayBuffer | ArrayBufferView | Blob): void;
+  ping(): void;
+  _close(code?: number, reason?: string): void;
+  _unregisterEvents(): void;
+  _registerEvents(): void;
+  get onclose(): EventCallback | null;
+  set onclose(listener: ?EventCallback): void;
+  get onerror(): EventCallback | null;
+  set onerror(listener: ?EventCallback): void;
+  get onmessage(): EventCallback | null;
+  set onmessage(listener: ?EventCallback): void;
+  get onopen(): EventCallback | null;
+  set onopen(listener: ?EventCallback): void;
+}
+declare export default typeof WebSocket;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/WebSocket/WebSocket_old.js 1`] = `
 "type ArrayBufferView =
   | Int8Array
   | Uint8Array
@@ -10481,9 +10529,10 @@ interface Spec extends TurboModule {
     isUnique?: boolean
   ) => void;
   scrollTo: (shadowNode: mixed, options: ScrollOptions) => void;
-  getMountingManagerLogs: (surfaceId: number) => Array<string>;
+  takeMountingManagerLogs: (surfaceId: number) => Array<string>;
   flushMessageQueue: () => void;
   flushEventQueue: () => void;
+  validateEmptyMessageQueue: () => void;
   getRenderedOutput: (surfaceId: number, config: RenderFormatOptions) => string;
   reportTestSuiteResultsJSON: (results: string) => void;
 }
@@ -11342,7 +11391,7 @@ exports[`public API should not change unintentionally src/private/webapis/dom/no
   releasePointerCapture(pointerId: number): void;
 }
 declare export function getBoundingClientRect(
-  node: ReadOnlyElement,
+  element: ReadOnlyElement,
   { includeTransform: boolean }
 ): DOMRect;
 "

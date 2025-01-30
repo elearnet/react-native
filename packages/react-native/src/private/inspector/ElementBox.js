@@ -10,17 +10,17 @@
 
 'use strict';
 
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
+import type {ViewStyleProp} from '../../../Libraries/StyleSheet/StyleSheet';
 import type {InspectedElementFrame} from './Inspector';
 
 import React from 'react';
 
-const View = require('../Components/View/View');
-const flattenStyle = require('../StyleSheet/flattenStyle');
-const StyleSheet = require('../StyleSheet/StyleSheet');
-const Dimensions = require('../Utilities/Dimensions').default;
-const BorderBox = require('./BorderBox');
-const resolveBoxStyle = require('./resolveBoxStyle');
+const View = require('../../../Libraries/Components/View/View').default;
+const flattenStyle = require('../../../Libraries/StyleSheet/flattenStyle');
+const StyleSheet = require('../../../Libraries/StyleSheet/StyleSheet');
+const Dimensions = require('../../../Libraries/Utilities/Dimensions').default;
+const BorderBox = require('./BorderBox').default;
+const resolveBoxStyle = require('./resolveBoxStyle').default;
 
 type Props = $ReadOnly<{
   frame: InspectedElementFrame,
@@ -147,4 +147,4 @@ function resolveSizeInPlace(
   }
 }
 
-module.exports = ElementBox;
+export default ElementBox;

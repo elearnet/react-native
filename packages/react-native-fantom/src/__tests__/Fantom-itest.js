@@ -17,6 +17,7 @@ import type {Root} from '..';
 import Fantom from '..';
 import * as React from 'react';
 import {ScrollView, Text, TextInput, View} from 'react-native';
+import NativeFantom from 'react-native/src/private/specs/modules/NativeFantom';
 import ensureInstance from 'react-native/src/private/utilities/ensureInstance';
 import ReactNativeElement from 'react-native/src/private/webapis/dom/nodes/ReactNativeElement';
 
@@ -132,6 +133,16 @@ describe('Fantom', () => {
       });
       expect(threw).toBe(true);
     });
+
+    it('should error when any scheduled tasks remain after the test', () => {
+      Fantom.scheduleTask(() => {});
+      expect(() => NativeFantom.validateEmptyMessageQueue()).toThrow(
+        'Exception in HostFunction: MessageQueue is not empty',
+      );
+
+      // Flushing queue to avoid this test failing
+      Fantom.runWorkLoop();
+    });
   });
 
   describe('createRoot', () => {
@@ -154,6 +165,22 @@ describe('Fantom', () => {
           viewportHeight: 600,
         },
       );
+    });
+
+    it('throws when trying to render a root outside of a task', () => {
+      const root = Fantom.createRoot();
+
+      expect(() => {
+        root.render(<View />);
+      }).toThrow(
+        'Unexpected call to `render` outside of the event loop. Please call `render` within a `runTask` callback.',
+      );
+
+      expect(() => {
+        Fantom.runTask(() => {
+          root.render(<View />);
+        });
+      }).not.toThrow();
     });
   });
 

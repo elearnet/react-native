@@ -11,7 +11,7 @@
 import type {
   HostInstance,
   TouchedViewDataAtPoint,
-} from '../Renderer/shims/ReactNativeTypes';
+} from '../../../Libraries/Renderer/shims/ReactNativeTypes';
 
 const invariant = require('invariant');
 
@@ -49,7 +49,7 @@ function validateRenderers(): void {
   );
 }
 
-module.exports = function getInspectorDataForViewAtPoint(
+function getInspectorDataForViewAtPoint(
   inspectedView: ?HostInstance,
   locationX: number,
   locationY: number,
@@ -78,4 +78,6 @@ module.exports = function getInspectorDataForViewAtPoint(
       );
     }
   }
-};
+}
+
+export default getInspectorDataForViewAtPoint;

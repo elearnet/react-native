@@ -76,9 +76,10 @@ interface Spec extends TurboModule {
     shadowNode: mixed /* ShadowNode */,
     options: ScrollOptions,
   ) => void;
-  getMountingManagerLogs: (surfaceId: number) => Array<string>;
+  takeMountingManagerLogs: (surfaceId: number) => Array<string>;
   flushMessageQueue: () => void;
   flushEventQueue: () => void;
+  validateEmptyMessageQueue: () => void;
   getRenderedOutput: (surfaceId: number, config: RenderFormatOptions) => string;
   reportTestSuiteResultsJSON: (results: string) => void;
 }

@@ -716,7 +716,7 @@ public class com/facebook/react/bridge/ColorPropConverter {
 	public static fun resolveResourcePath (Landroid/content/Context;Ljava/lang/String;)Ljava/lang/Integer;
 }
 
-public class com/facebook/react/bridge/CxxCallbackImpl : com/facebook/jni/HybridClassBase, com/facebook/react/bridge/Callback {
+public final class com/facebook/react/bridge/CxxCallbackImpl : com/facebook/jni/HybridClassBase, com/facebook/react/bridge/Callback {
 	public fun invoke ([Ljava/lang/Object;)V
 }
 
@@ -766,11 +766,6 @@ public class com/facebook/react/bridge/DynamicFromObject : com/facebook/react/br
 	public fun getType ()Lcom/facebook/react/bridge/ReadableType;
 	public fun isNull ()Z
 	public fun recycle ()V
-}
-
-public final class com/facebook/react/bridge/FallbackJSBundleLoader : com/facebook/react/bridge/JSBundleLoader {
-	public fun <init> (Ljava/util/List;)V
-	public fun loadScript (Lcom/facebook/react/bridge/JSBundleLoaderDelegate;)Ljava/lang/String;
 }
 
 public abstract class com/facebook/react/bridge/GuardedAsyncTask : android/os/AsyncTask {
@@ -1093,14 +1088,6 @@ public class com/facebook/react/bridge/PromiseImpl : com/facebook/react/bridge/P
 
 public abstract class com/facebook/react/bridge/ReactApplicationContext : com/facebook/react/bridge/ReactContext {
 	public fun <init> (Landroid/content/Context;)V
-}
-
-public final class com/facebook/react/bridge/ReactBridge {
-	public static final field INSTANCE Lcom/facebook/react/bridge/ReactBridge;
-	public static final fun getLoadEndTime ()J
-	public static final fun getLoadStartTime ()J
-	public static final fun isInitialized ()Z
-	public static final fun staticInit ()V
 }
 
 public abstract class com/facebook/react/bridge/ReactContext : android/content/ContextWrapper {
@@ -2095,7 +2082,6 @@ public class com/facebook/react/devsupport/DevServerHelper {
 	public fun getSourceUrl (Ljava/lang/String;)Ljava/lang/String;
 	public fun getWebsocketProxyURL ()Ljava/lang/String;
 	public fun isPackagerRunning (Lcom/facebook/react/devsupport/interfaces/PackagerStatusCallback;)V
-	public fun launchJSDevtools ()V
 	public fun openDebugger (Lcom/facebook/react/bridge/ReactContext;Ljava/lang/String;)V
 	public fun openInspectorConnection ()V
 	public fun openPackagerConnection (Ljava/lang/String;Lcom/facebook/react/devsupport/DevServerHelper$PackagerCommandListener;)V
@@ -2189,7 +2175,7 @@ public abstract interface class com/facebook/react/devsupport/HMRClient : com/fa
 	public abstract fun disable ()V
 	public abstract fun enable ()V
 	public abstract fun registerBundle (Ljava/lang/String;)V
-	public abstract fun setup (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZ)V
+	public abstract fun setup (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZLjava/lang/String;)V
 }
 
 public final class com/facebook/react/devsupport/InspectorFlags {
@@ -7294,6 +7280,7 @@ public class com/facebook/react/views/text/TextAttributeProps {
 	public static final field TA_KEY_LETTER_SPACING S
 	public static final field TA_KEY_LINE_BREAK_STRATEGY S
 	public static final field TA_KEY_LINE_HEIGHT S
+	public static final field TA_KEY_MAX_FONT_SIZE_MULTIPLIER S
 	public static final field TA_KEY_OPACITY S
 	public static final field TA_KEY_ROLE S
 	public static final field TA_KEY_TEXT_DECORATION_COLOR S
@@ -7326,6 +7313,7 @@ public class com/facebook/react/views/text/TextAttributeProps {
 	protected field mLetterSpacingInput F
 	protected field mLineHeight F
 	protected field mLineHeightInput F
+	protected field mMaxFontSizeMultiplier F
 	protected field mNumberOfLines I
 	protected field mOpacity F
 	protected field mRole Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$Role;

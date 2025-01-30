@@ -21,7 +21,7 @@ import ReactFabric from 'react-native/Libraries/Renderer/shims/ReactFabric';
 import NativeFantom, {
   NativeEventCategory,
 } from 'react-native/src/private/specs/modules/NativeFantom';
-import {getShadowNode} from 'react-native/src/private/webapis/dom/nodes/internals/NodeInternals';
+import {getNativeNodeReference} from 'react-native/src/private/webapis/dom/nodes/internals/NodeInternals';
 
 let globalSurfaceIdCounter = 1;
 
@@ -57,7 +57,13 @@ class Root {
     globalSurfaceIdCounter += 10;
   }
 
-  render(element: MixedElement) {
+  render(element: MixedElement): void {
+    if (!flushingQueue) {
+      throw new Error(
+        'Unexpected call to `render` outside of the event loop. Please call `render` within a `runTask` callback.',
+      );
+    }
+
     if (!this.#hasRendered) {
       NativeFantom.startSurface(
         this.#surfaceId,
@@ -71,8 +77,8 @@ class Root {
     ReactFabric.render(element, this.#surfaceId, null, true);
   }
 
-  getMountingLogs(): Array<string> {
-    return NativeFantom.getMountingManagerLogs(this.#surfaceId);
+  takeMountingManagerLogs(): Array<string> {
+    return NativeFantom.takeMountingManagerLogs(this.#surfaceId);
   }
 
   destroy() {
@@ -166,7 +172,7 @@ function dispatchNativeEvent(
   payload?: {[key: string]: mixed},
   options?: {category?: NativeEventCategory, isUnique?: boolean},
 ) {
-  const shadowNode = getShadowNode(node);
+  const shadowNode = getNativeNodeReference(node);
   NativeFantom.dispatchNativeEvent(
     shadowNode,
     type,
@@ -180,7 +186,7 @@ function scrollTo(
   node: ReactNativeElement,
   options: {x: number, y: number, zoomScale?: number},
 ) {
-  const shadowNode = getShadowNode(node);
+  const shadowNode = getNativeNodeReference(node);
   NativeFantom.scrollTo(shadowNode, options);
 }
 
