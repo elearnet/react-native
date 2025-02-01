@@ -18,7 +18,26 @@ import type {ParseResult} from 'hermes-transform/dist/transform/parse';
 const {transformAST} = require('hermes-transform/dist/transform/transformAST');
 
 const visitors /*: TransformVisitor */ = context => ({
-  // TODO
+  ObjectTypeProperty(node) /*: void */ {
+    if (node.key.type === 'Identifier' && node.key.name.startsWith('_')) {
+      context.removeNode(node);
+    }
+  },
+  Property(node) /*: void */ {
+    if (node.key.type === 'Identifier' && node.key.name.startsWith('_')) {
+      context.removeNode(node);
+    }
+  },
+  PropertyDefinition(node) /*: void */ {
+    if (node.key.type === 'Identifier' && node.key.name.startsWith('_')) {
+      context.removeNode(node);
+    }
+  },
+  MethodDefinition(node) /*: void */ {
+    if (node.key.type === 'Identifier' && node.key.name.startsWith('_')) {
+      context.removeNode(node);
+    }
+  },
 });
 
 async function stripPrivateProperties(
@@ -26,5 +45,8 @@ async function stripPrivateProperties(
 ) /*: Promise<TransformASTResult> */ {
   return transformAST(source, visitors);
 }
+
+// Exported for reuse in public-api-test
+stripPrivateProperties.visitors = visitors;
 
 module.exports = stripPrivateProperties;
