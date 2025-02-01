@@ -145,6 +145,8 @@ const codegenLog = (text, info = false) => {
   console.log(`${cyan}${bold}[Codegen]${reset} ${color}${text}${reset}`);
 };
 
+let currentPlatform = 'andriod';
+
 // HELPERS
 
 function pkgJsonIncludesGeneratedCode(pkgJson) {
@@ -474,6 +476,10 @@ function reactNativeCoreLibraryOutputPath(libraryName, platform) {
 }
 
 function generateSchemaInfo(library, platform) {
+  //platform==0, why is that? is it ok?
+  if(!platform){
+    platform = currentPlatform;
+  }
   const pathToJavaScriptSources = path.join(
     library.libraryPath,
     library.config.jsSrcsDir,
@@ -901,6 +907,10 @@ function generateReactCodegenPodspec(
   outputPath,
   baseOutputPath,
 ) {
+  //fix
+  if (!baseOutputPath) {
+    baseOutputPath = outputPath;
+  }
   const inputFiles = getInputFiles(appPath, appPkgJson);
   const codegenScript = codegenScripts(appPath, baseOutputPath);
   const template = fs.readFileSync(REACT_CODEGEN_PODSPEC_TEMPLATE_PATH, 'utf8');
@@ -1007,13 +1017,15 @@ function execute(projectRoot, targetPlatform, baseOutputPath, source) {
       targetPlatform === 'all' ? supportedPlatforms : [targetPlatform];
 
     for (const platform of platforms) {
+      //fix bg
+      currentPlatform = platform;
+      //fix ed
       const outputPath = computeOutputPath(
         projectRoot,
         baseOutputPath,
         pkgJson,
         platform,
       );
-
       const schemaInfos = generateSchemaInfos(libraries);
       generateNativeCode(
         outputPath,
@@ -1023,7 +1035,6 @@ function execute(projectRoot, targetPlatform, baseOutputPath, source) {
         pkgJsonIncludesGeneratedCode(pkgJson),
         platform,
       );
-
       if (source === 'app') {
         // These components are only required by apps, not by libraries
         generateRCTThirdPartyComponents(libraries, outputPath);
